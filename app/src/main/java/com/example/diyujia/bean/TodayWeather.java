@@ -5,6 +5,7 @@ package com.example.diyujia.bean;
  */
 
 public class TodayWeather {
+    private String citycodeS;
     private String city;
     private String updatetime;
     private String wendu;
@@ -18,6 +19,7 @@ public class TodayWeather {
     private String low;
     private String type;
 
+    public String getCitycodeS() {return citycodeS;}
     public String getCity() {
         return city;
     }
@@ -64,6 +66,8 @@ public class TodayWeather {
     public String getType() {
         return type;
     }
+
+    public void setCitycodeS(String citycode) {this.citycodeS = citycode;}
 
     public void setCity(String city) {
         this.city = city;
@@ -116,6 +120,7 @@ public class TodayWeather {
     public String toString(){
         return "TodayWeather{"+
                 "city='" + city + '\'' +
+                ",citycodeS='" + citycodeS + '\'' +
                 ",updatetime='" + updatetime + '\'' +
                 ",wendu=" + wendu + '\'' +
                 ",shidu=" + shidu + '\'' +

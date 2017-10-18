@@ -1,6 +1,8 @@
 package com.example.diyujia.miniweather;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +38,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private  static final int UPDATE_TODAY_WEATHER = 1;
     private ImageView mUpdateBtn;
 
+    private ImageView mCitySelect;
+
     private TextView cityTv,timeTv,humidityTv,weekTv,pmDataTv,pmQualityTv,
             temperatureTv,climateTv,windTv,city_name_Tv,wenduTv;
     private ImageView weatherImg,pmImg;
@@ -67,10 +71,20 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Log.d("myWeather","网络挂了");
             Toast.makeText(MainActivity.this,"网络挂了！",Toast.LENGTH_LONG).show();
         }
+
+        mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
+        mCitySelect.setOnClickListener(this);
+
         initView();
     }
 
     void initView(){
+        //利用SharedPreferences获取数据
+        SharedPreferences preferences = getSharedPreferences("weather", Context.MODE_PRIVATE);
+        String citycodeSave = preferences.getString("citycodeSave","101010100");
+        queryWeatherCode(citycodeSave);
+
+
         city_name_Tv = (TextView) findViewById(R.id.title_city_name);
         cityTv = (TextView) findViewById(R.id.city);
         timeTv = (TextView) findViewById(R.id.time);
@@ -84,7 +98,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         windTv = (TextView) findViewById(R.id.wind);
         weatherImg = (ImageView) findViewById(R.id.weather_img);
         wenduTv = (TextView)  findViewById(R.id.temperature_add);
-        wenduTv.setText("N/A");
+        /*wenduTv.setText("N/A");
         city_name_Tv.setText("N/A");
         cityTv.setText("N/A");
         timeTv.setText("N/A");
@@ -94,13 +108,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         weekTv.setText("N/A");
         temperatureTv.setText("N/A");
         climateTv.setText("N/A");
-        windTv.setText("N/A");
+        windTv.setText("N/A");*/
     }
         /**
          *
          * @param cityCode
          */
-    private void queryWeatherCode(String cityCode){
+    private void queryWeatherCode(final String cityCode){
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d("myWeather",address);
         new Thread(new Runnable(){
@@ -124,8 +138,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     }
                     String responseStr = response.toString();
                     Log.d("myWeather",responseStr);
-
                     todayWeather = parseXML(responseStr);
+                    todayWeather.setCitycodeS(cityCode); //手动设置城市ID
                     if(todayWeather != null){
                         Log.d("myWeather",todayWeather.toString());
                         Message msg = new Message();
@@ -252,6 +266,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
         }
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
+        //用SharePreferences保存最后一次更新的城市代码
+        SharedPreferences preferences = getSharedPreferences("weather",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editorWeather = preferences.edit();
+        String citycodeSave = todayWeather.getCitycodeS();
+        editorWeather.putString("citycodeSave",citycodeSave);
+        editorWeather.commit();
     }
 
     private TodayWeather parseXML(String xmldata){
@@ -353,6 +373,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view){
+        if(view.getId() == R.id.title_city_manager){
+            Intent i = new Intent(this,SelectCity.class);
+            //startActivity(i);
+            startActivityForResult(i,1);
+        }
+
         if(view.getId() == R.id.title_update_btn){
             SharedPreferences sharedPreferences = getSharedPreferences("config",MODE_PRIVATE);
             String cityCode = sharedPreferences.getString("main_city_code","101010100");
@@ -361,6 +387,20 @@ public class MainActivity extends Activity implements View.OnClickListener{
             if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
                 Log.d("myWeather","网络OK");
                 queryWeatherCode(cityCode);
+            }else{
+                Log.d("myWeather","网络挂了");
+                Toast.makeText(MainActivity.this,"网络挂了！",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            String newCityCode = data.getStringExtra("cityCode");
+            Log.d("myWeather","选择的城市代码为"+newCityCode);
+
+            if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
+                Log.d("myWeather","网络OK");
+                queryWeatherCode(newCityCode);
             }else{
                 Log.d("myWeather","网络挂了");
                 Toast.makeText(MainActivity.this,"网络挂了！",Toast.LENGTH_LONG).show();
