@@ -170,7 +170,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
         temperatureTv.setText(todayWeather.getHigh()+"~"+todayWeather.getLow());
         climateTv.setText(todayWeather.getType());
         windTv.setText("风力:"+todayWeather.getFengli());
-        int IntPm25 = Integer.parseInt(todayWeather.getPm25());
+        int IntPm25 = 0;
+        if(todayWeather.getPm25() != null){
+            IntPm25 = Integer.parseInt(todayWeather.getPm25());
+        }
         int Pm25Value = 0;
         if(IntPm25 > 50 && IntPm25 <= 100){
             Pm25Value = 1;
