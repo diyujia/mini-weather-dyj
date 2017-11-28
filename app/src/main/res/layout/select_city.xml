@@ -32,7 +32,7 @@
             android:gravity="center"/>
     </RelativeLayout>
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/search_city"
         android:layout_width="match_parent"
         android:layout_height="45.0dp"
@@ -43,11 +43,29 @@
             android:layout_height="wrap_content"
             android:text="搜索城市"/>
 
-    </RelativeLayout>
+    </RelativeLayout>-->
+    <EditText
+        android:id="@+id/search_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_top"
+        android:hint="搜索全国城市（中文）"
+        android:layout_margin="10.0dp"
+        android:drawableLeft="@drawable/magnifying_glass"
+        android:drawablePadding="8.0dp"
+        android:paddingLeft="10.0dp"
+        android:paddingRight="30.0dp"
+        android:paddingTop="8.0dp"
+        android:maxLines="1"
+        android:background="@drawable/contact_search_box_edittext_keyword_background"
+        android:textColor="#ff000000"
+        android:textColorHint="#ffcccccc"
+        android:textSize="15.0sp"
+        />
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_city">
+        android:layout_below="@id/search_edit">
         <ListView
             android:id="@+id/title_list"
             android:layout_width="wrap_content"
