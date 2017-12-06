@@ -56,15 +56,23 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
     };
 
+
+    /**
+    * 重写onCreate方法
+    * @param savedInstanceState 保存activity状态
+    * */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+        //把布局加载到MainActivity窗口上
         setContentView(R.layout.weather_info);
 
         mUpdateBtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdateBtn.setOnClickListener(this);
 
-        if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
+        //用于测试网络连接是否正常
+        if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){  //如果当前状态不是NONE则显示网络OK
             Log.d("myWeather","网络OK");
             Toast.makeText(MainActivity.this,"网络OK！",Toast.LENGTH_LONG).show();
         }else{
@@ -110,10 +118,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
         climateTv.setText("N/A");
         windTv.setText("N/A");*/
     }
-        /**
-         *
-         * @param cityCode
-         */
+    /**
+     *
+     * @param cityCode
+     * */
     private void queryWeatherCode(final String cityCode){
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d("myWeather",address);
@@ -377,16 +385,24 @@ public class MainActivity extends Activity implements View.OnClickListener{
         return todayWeather;
     }
 
+    /**
+     * 实现OnClickListener中的onClick方法
+     * @param view
+     */
     @Override
     public void onClick(View view){
+        //实现选择城市按钮的操作
         if(view.getId() == R.id.title_city_manager){
             Intent i = new Intent(this,SelectCity.class);
             //startActivity(i);
             startActivityForResult(i,1);
         }
 
+        //实现更新按钮的操作
         if(view.getId() == R.id.title_update_btn){
             SharedPreferences sharedPreferences = getSharedPreferences("config",MODE_PRIVATE);
+            //cityCode 从sharedPreference中的main_city_code字段中取
+            //如果该字段没有定义或者没有值得话，缺省值为101010100
             String cityCode = sharedPreferences.getString("main_city_code","101010100");
             Log.d("myWeather",cityCode);
 

@@ -2,7 +2,10 @@
           
     package="com.example.diyujia.miniweather"
     >
+    <!--下面两行代码是程序需要获取的安卓权限，必须要提前声明，否则会出错 -->
+    <!--允许程序打开网络套接字 -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--允许程序获取网络信息 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:name="com.example.diyujia.app.MyApplication"
